@@ -1,11 +1,11 @@
 ---
-title: "Introduction"
+title: "Fitting"
 teaching: 0
 exercises: 0
 questions:
-- "What is the point of these exercises?"
-- "What equipment/tools do I need?"
-- "What background experience should I have?"
+- "How do I fit my data?"
+- "What is a chi-square fit?"
+- "What is an extended maximum likelihood fit?"
 objectives:
 - "First learning objective. (FIXME)"
 keypoints:

@@ -1,11 +1,9 @@
 ---
-title: "Introduction"
+title: "4-vector manipulation"
 teaching: 0
 exercises: 0
 questions:
-- "What is the point of these exercises?"
-- "What equipment/tools do I need?"
-- "What background experience should I have?"
+- "How do I work with 4-vectors and calculate basic kinematic relations?"
 objectives:
 - "First learning objective. (FIXME)"
 keypoints:

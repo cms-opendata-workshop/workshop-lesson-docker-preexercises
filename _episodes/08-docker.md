@@ -1,7 +1,7 @@
 ---
-title: "Pre-exercise: Using Docker"
+title: "Using Docker"
 teaching: Self-guided
-exercises: ??? min
+exercises: 20 min
 questions:
 - "How do I use docker to effectively interface with the CMS open data?"
 objectives:

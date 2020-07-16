@@ -1,11 +1,10 @@
 ---
-title: "Introduction"
+title: "Weighting events"
 teaching: 0
 exercises: 0
 questions:
-- "What is the point of these exercises?"
-- "What equipment/tools do I need?"
-- "What background experience should I have?"
+- "Why would I want to weight events?"
+- "How do I weight events?"
 objectives:
 - "First learning objective. (FIXME)"
 keypoints:

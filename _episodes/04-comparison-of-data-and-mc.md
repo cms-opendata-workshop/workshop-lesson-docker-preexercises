@@ -1,11 +1,9 @@
 ---
-title: "Introduction"
+title: "Comparing data and Monte Carlo"
 teaching: 0
 exercises: 0
 questions:
-- "What is the point of these exercises?"
-- "What equipment/tools do I need?"
-- "What background experience should I have?"
+- "How do I compare data and Monte Carlo samples?"
 objectives:
 - "First learning objective. (FIXME)"
 keypoints:
