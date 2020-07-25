@@ -38,15 +38,50 @@ download the full image.
 
 This command and some extra guidance can also be found on the 
 [Open Data Portal introduction to Docker](http://opendata.cern.ch/docs/cms-guide-docker), however
-the following command differs in that *it allows for X11 forwarding*. That means that if you 
+the following command differs in two ways:
+* It allows for X11 forwarding That means that if you 
 run a program from within Docker that pops up any windows or graphics, like ROOT, they will show up. 
+* It allows you to access ssh keys from inside the docker container. This means that 
+if you are [using ssh keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) to connect to Github and have stored those keys locally, you will have
+an easier time cloning repositories.
 
 ~~~
-docker run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
 docker run -it -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
 
 ~~~
 {: .language-bash}
+
+It might be worth breaking down this command for the interested user. For a more complete
+listing of options, see [the official Docker documentation](https://docs.docker.com/engine/reference/commandline/container_run/) on the ```run``` command. 
+
+To start a CMSSW container instance and open it in a bash shell, one would need only type
+
+~~~
+docker run -it cmsopendata/cmssw_5_3_32 /bin/bash
+
+~~~
+{: .language-bash}
+
+The ```-it``` option means to start the instance in *interactive* mode and using a *pseudo-TTY*
+display. 
+
+Adding the following gives us X11-forwarding.
+
+~~~
+... --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" ...
+
+~~~
+{: .language-bash}
+
+And the following mounts our local ```.ssh``` directory as a local *volume*. 
+
+~~~
+... -v ${HOME}/.ssh:/home/cmsusr/.ssh  ...
+
+~~~
+{: .language-bash}
+
+
 
 When you're done, you can just type ```exit``` to leave the Docker environment. 
 
@@ -92,7 +127,7 @@ docker attach 7719a7d74190
 Voila! You should be back in the same container. 
 
 
-> ## Test X11 forwarding
+> ## CHALLENGE! Test X11 forwarding
 >
 > Go into the Docker environment and open ROOT, simply by typing ```root``` on the command line. 
 > Do you see the ROOT splash screen pop up? 
@@ -102,10 +137,18 @@ Voila! You should be back in the same container.
 > To exit the ROOT interpreter type ```.q```.
 {: .challenge}
 
-> ## Test persistence
+> ## CHALLENGE! Test persistence
 >
-> Go into the Docker environment and create a test file with your favoite editor.
-> (Matt Bellis: mine is vi!) Just add some random text to the file. 
+> Go into the Docker environment and create a test file using some
+> simple shell commands. Type the following exactly as you see it.
+> It will dump some text into a file and then print the contents
+> of the file to the screen
+> ~~~
+> echo "I am still here!" > test.tmp
+> cat test.tmp
+> 
+> ~~~
+> {: .language-bash}
 >
 > After you've done this, exit out of the container and try to attach to the same
 > instance. If you did it correctly, you should be able to list the contents
@@ -113,6 +156,11 @@ Voila! You should be back in the same container.
 > If not, check that you followed all the instructions
 > above correctly or contact the facilitators. 
 {: .challenge}
+
+## Copy file out of container
+
+docker cp 5610810218c4:/home/cmsusr/CMSSW_5_3_32/src/cern-opendata-sandbox/README.md .
+
 
 ## Checkout a git repository and run a small analysis snippet
 ~~~
