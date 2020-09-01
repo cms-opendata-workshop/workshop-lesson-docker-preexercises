@@ -1,6 +1,6 @@
 # Contributing
 
-The CMSDAS training material and its repositories
+The CMS Open Data Workshop training material and its repositories
 are open source projects,
 and we welcome contributions of all kinds:
 new lessons,
@@ -47,13 +47,13 @@ and to meet some of our community members.
 ## Where to Contribute
 
 1.  If you wish to change this lesson,
-    please work in <https://github.com/CMSDAS/FIXME>,
-    which can be viewed at <https://cmsdas.github.io/FIXME>.
+    please work in <https://github.com/cms-opendata-workshop/FIXME>,
+    which can be viewed at <https://cms-opendata-workshop.github.io/FIXME>.
 
 2.  If you wish to change the example lesson,
-    please work in <https://github.com/cmsdas/lesson-example>,
+    please work in <https://github.com/carpentries/lesson-example>,
     which documents the format of our lessons
-    and can be viewed at <https://cmsdas.github.io/lesson-example>.
+    and can be viewed at <https://carpentries.github.io/lesson-example>.
 
 3.  If you wish to change the template used for workshop websites,
     please work in <https://github.com/carpentries/workshop-template>.
@@ -136,5 +136,5 @@ You can also [reach us by email][email].
 [github-join]: https://github.com/join
 [how-contribute]: https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github
 [issues]: https://guides.github.com/features/issues/
-[cms-issues]: https://github.com/issues?q=user%3Acmsdas
+[cms-issues]: https://github.com/issues?q=user%3Acms-opendata-workshop
 [cms-site]: https://cms.cern/
