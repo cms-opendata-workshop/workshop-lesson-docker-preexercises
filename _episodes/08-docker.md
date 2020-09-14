@@ -5,10 +5,11 @@ exercises: 20 min
 questions:
 - "How do I use docker to effectively interface with the CMS open data?"
 objectives:
-- "Download (fetch) the correct docker image (IS THIS THE RIGHT NOMENCLATURE?)"
-- "Fire up docker in the most useful way"
+- "Download (fetch) the correct docker image "
+- "Fire up docker in the most useful way for CMS Open Data analysis"
 - "Use docker in a persistent way"
 - "Copy data out of the docker environment"
+- "Access Github repositories from within a docker environment"
 keypoints:
 - "First key point. Brief Answer to questions. (FIXME)"
 
@@ -28,13 +29,18 @@ There are many resources on the web to help you install Docker. You can start
 with [the official Docker site](https://docs.docker.com/get-docker/) or whatever you find
 that works for you. 
 
+Once you have installed Docker, we again recommend you follow the 
+[official Docker getting started/hello-world example](https://docs.docker.com/get-started/).
+If you can run this, you should be good with everything that follows!
+
 
 ## Using the proper image for CMS software
 
 The first time you go to run Docker, the following command will fetch the docker image and 
 put you into a ```bash``` shell in which you have access to a complete CMS software release that
 is appropriate for interfacing with the 2011 and 2012 7 and 8 TeV datasets. It may take some time to 
-download the full image.
+download the full image, even as long as 20-30 minutes, depending on the speed of your internet
+connection.
 
 This command and some extra guidance can also be found on the 
 [Open Data Portal introduction to Docker](http://opendata.cern.ch/docs/cms-guide-docker), however
@@ -46,7 +52,7 @@ if you are [using ssh keys](https://docs.github.com/en/github/authenticating-to-
 an easier time cloning repositories.
 
 ~~~
-docker run -it -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
+docker run -it --name MYOPENDATAPROJECT -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
 
 ~~~
 {: .language-bash}
@@ -65,6 +71,15 @@ docker run -it cmsopendata/cmssw_5_3_32 /bin/bash
 The ```-it``` option means to start the instance in *interactive* mode and using a *pseudo-TTY*
 display. 
 
+Adding the following assigns a ```name``` to the instance so that we can refer back
+to this environment and still access any files we created in there. You can, of course,
+choose a different name than ```MYOPENDATAPROJECT```! :)
+
+~~~
+... --name MYOPENDATAPROJECT ...
+
+~~~
+{: .language-bash}
 Adding the following gives us X11-forwarding.
 
 ~~~
@@ -81,9 +96,13 @@ And the following mounts our local ```.ssh``` directory as a local *volume*.
 ~~~
 {: .language-bash}
 
-
+In the lesson on access luminosity information, we explain how to mount the
+*CERN-VM fileystem* which will add some additional flags. However, if 
+you're not planning on accessing those helper functions, the above should be 
+enough.
 
 When you're done, you can just type ```exit``` to leave the Docker environment. 
+
 
 ## Using Docker repeatedly
 
@@ -94,8 +113,40 @@ there are some issues with this. Most significantly, any files that you make or 
 environment will not be there! Instead of the above command, we want to run Docker in a *persistent* way so that
 we keep going into the same working area with all our files and code saved each time. 
 
-To do this, we will need to ```start``` and then ```attach``` to the exact same Docker instance as before. 
-First of all, we want to see what other Docker processes we have running. To do this, run the following
+There are two ways to do this: by giving your container instance a *name* or by making sure you
+reference the *container id*. The former approach is probably easier and preferred, but we discuss 
+both below. 
+
+### Start docker by name
+
+The easiest way to start a docker instance that you want to return to is using the ```--name```
+option, as shown in the first example. If you've named your instance similarly, you can
+```start``` the instance, just by providing the name. You will also use ```-i``` for interactive
+rather than ```-it``` for the *pseudo-TTY*  display. It will still come up as normal. 
+
+Note also that you do not need the full ```cmsopendata/cmssw_5_3_32 ``` argument anymore. 
+
+So to re-```start``` your container, just do 
+
+~~~
+docker start -i MYOPENDATAPROJECT --volume "/cvmfs:/cvmfs:shared"  -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" /bin/bash
+~~~
+{: .language-bash}
+
+If you ever just wanted to open the image quickly and not worry about X11-forwarding or mounting 
+specific disk volumes, you could just run
+
+~~~
+docker start -i MYOPENDATAPROJECT
+~~~
+{: .language-bash}
+
+
+### Start/Attach to a particular process
+
+If you did not name your container instance but still want to return to a very specifc
+environment, you will need to ```start``` and then ```attach``` to the exact same Docker instance as before. 
+First of all, you want to see what other Docker processes we have running. To do this, run the following
 command
 ~~~
 docker ps -a
@@ -144,7 +195,7 @@ Voila! You should be back in the same container.
 > It will dump some text into a file and then print the contents
 > of the file to the screen
 > ~~~
-> echo "I am still here!" > test.tmp
+> echo "I am still here" > test.tmp
 > cat test.tmp
 > 
 > ~~~
@@ -157,9 +208,30 @@ Voila! You should be back in the same container.
 > above correctly or contact the facilitators. 
 {: .challenge}
 
-## Copy file out of container
+## Copy file(s) into or out of a container
 
-docker cp 5610810218c4:/home/cmsusr/CMSSW_5_3_32/src/cern-opendata-sandbox/README.md .
+Sometimes you will want to copy a file directly into or out of a container. Let's start with copying
+a file *out*. 
+
+Suppose you have created your **MYOPENDATAPROJECT** container *and* you did the challenge
+question above to *Test persistence*. In your docker image, there should be a file now 
+called ```test.tmp``` Run the following on your *local* machine and *not* in a docker environment. 
+It should copy the file out and onto your local machine where you can inspect it. 
+
+~~~
+docker cp MYOPENDATAPROJECT:/home/cmsusr/CMSSW_5_3_32/src/test.tmp .
+~~~
+{: .language-bash}
+
+If you want to copy a file *into* a container instance, it works the way you might expect. 
+Suppose you have a local file called ```localfile.tmp```. You can copy it into the same instance
+as follows.
+
+~~~
+docker cp localfile.tmp MYOPENDATAPROJECT:/home/cmsusr/CMSSW_5_3_32/src/
+~~~
+{: .language-bash}
+
 
 
 ## Checkout a git repository and run a small analysis snippet
