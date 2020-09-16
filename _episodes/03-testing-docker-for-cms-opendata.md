@@ -1,7 +1,7 @@
 ---
-title: "Using Docker"
+title: "Using Docker with the CMS open data"
 teaching: Self-guided
-exercises: 20 min
+exercises: 60 min
 questions:
 - "How do I use docker to effectively interface with the CMS open data?"
 objectives:
@@ -11,7 +11,7 @@ objectives:
 - "Copy data out of the docker environment"
 - "Access Github repositories from within a docker environment"
 keypoints:
-- "First key point. Brief Answer to questions. (FIXME)"
+- "Docker is easy to use but there are number of options you have to be careful with in order to use it effectively with the CMS open data"
 
 ---
 
@@ -234,26 +234,39 @@ docker cp localfile.tmp MYOPENDATAPROJECT:/home/cmsusr/CMSSW_5_3_32/src/
 
 
 
-## Checkout a git repository and run a small analysis snippet
+## Checkout a git repository 
+
+We assume that you have configured your *local* machine to be able to access
+Github and have setup your machine to use the [ssh keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh). If you have, then the above instructions are mounting your local
+drive such that your Docker containers can access those ssh keys. 
+
+I've prepared a minimal github repository for you to clone for testing. To clone it, 
+you will clone the directory slightly differently than the default procedure provided
+by Github. The way you will want to clone a repository is as follows. 
+
 ~~~
 git clone git://github.com/mattbellis/cern-opendata-sandbox
-
-but not
-
-git clone git@github.com:mattbellis/cern-opendata-sandbox.git
-
 ~~~
 {: .language-bash}
 
-TO DO!
+Normally one would run the following command (and is what Github shows you usually from the 
+webpage), but this does not work in the containers. 
+**Running the following command will probaly fail and give you errors about
+access rights.**
+~~~
+git clone git@github.com:mattbellis/cern-opendata-sandbox.git
+~~~
+{: .language-bash}
 
-> ## Further reading
+> ## Challenge!
+> 
+> Check out one of your own Github repositories to a container. Make some 
+> minor changes to one of the files and push it back to Github, just to verify
+> that you can do this. This will make it much easier for you to save your
+> work when you are developing your analysis pipeline.
 >
-> * text
-> * text
-> * text
 >
-{: .checklist}
+{: .challenge}
 
 {% include links.md %}
 
