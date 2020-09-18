@@ -23,11 +23,5 @@ If you run into problems with any of these steps, please reach out to the organi
 
 {% comment %} This is a comment in Liquid {% endcomment %}
 
-> ## Prerequisites
->
-> * A computer with an internet connection
-> * A familiarity with the python programming language
-> * A computer with Docker installed or the access privileges to install Docker yourself
-{: .prereq}
 
 {% include links.md %}

@@ -14,7 +14,9 @@ keypoints:
 ---
 
 At some point you may want to calculate the luminosity for the data you are analyzing. 
-CMS uses a tool called `brilcalc` but it is not included in the Docker image. 
+CMS uses a tool called `brilcalc` but it is not included in the Docker image. Similarly, there
+are some tools needed to calculate trigger effects/efficiencies that are also not included
+in the Docker image. 
 
 To get around this, we mount drives at CERN in the Docker container when you fire it up
 so that you can call this and perhaps other tools. 
