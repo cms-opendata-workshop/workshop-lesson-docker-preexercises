@@ -3,9 +3,7 @@ layout: lesson
 root: .  # Is the only page that doesn't follow the pattern /:path/index.html
 permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
 ---
-<krb>
-<img src="{{ relative_root_path }}{% link /assets/img/docker_opendata_logo.png %}" width="40%" />
-</krb>
+![](assets/img/docker_opendata_logo.png)
 
 These pre-exercises are designed to prepare you for using Docker in the context of
 the CMS Open Data Workshop. This is *not* a full introduction to Docker, however
