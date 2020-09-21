@@ -52,7 +52,7 @@ if you are [using ssh keys](https://docs.github.com/en/github/authenticating-to-
 an easier time cloning repositories.
 
 ~~~
-docker run -it --name MYOPENDATAPROJECT -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
+docker run -it --name myopendataproject -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
 
 ~~~
 {: .language-bash}
@@ -73,10 +73,10 @@ display.
 
 Adding the following assigns a ```name``` to the instance so that we can refer back
 to this environment and still access any files we created in there. You can, of course,
-choose a different name than ```MYOPENDATAPROJECT```! :)
+choose a different name than ```myopendataproject```! :)
 
 ~~~
-... --name MYOPENDATAPROJECT ...
+... --name myopendataproject ...
 
 ~~~
 {: .language-bash}
@@ -128,16 +128,12 @@ Note also that you do not need the full ```cmsopendata/cmssw_5_3_32 ``` argument
 
 So to re-```start``` your container, just do 
 
-~~~
-docker start -i MYOPENDATAPROJECT --volume "/cvmfs:/cvmfs:shared"  -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" /bin/bash
-~~~
-{: .language-bash}
-
-If you ever just wanted to open the image quickly and not worry about X11-forwarding or mounting 
-specific disk volumes, you could just run
+If you ever just wanted to open the image quickly, you can just run the following
+and you will still have X11-forwarding and the mounted disk volumes, assuming you 
+ran the full command earlier. 
 
 ~~~
-docker start -i MYOPENDATAPROJECT
+docker start -i myopendataproject
 ~~~
 {: .language-bash}
 
@@ -186,6 +182,15 @@ Voila! You should be back in the same container.
 > above correctly or contact the facilitators. 
 >
 > To exit the ROOT interpreter type ```.q```.
+>
+> If you find that X11 forwarding is _not_ working, try typing the following
+> before going starting your Docker container.
+>
+> ~~~
+> xhost local:root
+> ~~~
+> {: .bash}
+>
 {: .challenge}
 
 > ## CHALLENGE! Test persistence
@@ -213,13 +218,13 @@ Voila! You should be back in the same container.
 Sometimes you will want to copy a file directly into or out of a container. Let's start with copying
 a file *out*. 
 
-Suppose you have created your **MYOPENDATAPROJECT** container *and* you did the challenge
+Suppose you have created your **myopendataproject** container *and* you did the challenge
 question above to *Test persistence*. In your docker image, there should be a file now 
 called ```test.tmp``` Run the following on your *local* machine and *not* in a docker environment. 
 It should copy the file out and onto your local machine where you can inspect it. 
 
 ~~~
-docker cp MYOPENDATAPROJECT:/home/cmsusr/CMSSW_5_3_32/src/test.tmp .
+docker cp myopendataproject:/home/cmsusr/CMSSW_5_3_32/src/test.tmp .
 ~~~
 {: .language-bash}
 
@@ -228,7 +233,7 @@ Suppose you have a local file called ```localfile.tmp```. You can copy it into t
 as follows.
 
 ~~~
-docker cp localfile.tmp MYOPENDATAPROJECT:/home/cmsusr/CMSSW_5_3_32/src/
+docker cp localfile.tmp myopendataproject:/home/cmsusr/CMSSW_5_3_32/src/
 ~~~
 {: .language-bash}
 
