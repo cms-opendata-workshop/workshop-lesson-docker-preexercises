@@ -34,15 +34,19 @@ connection.
 
 This command and some extra guidance can also be found on the 
 [Open Data Portal introduction to Docker](http://opendata.cern.ch/docs/cms-guide-docker), however
-the following command differs in two ways:
+the following command differs in a few ways:
 * It allows for X11 forwarding That means that if you 
 run a program from within Docker that pops up any windows or graphics, like ROOT, they will show up. 
 * It allows you to access ssh keys from inside the docker container. This means that 
-if you are [using ssh keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) to connect to Github and have stored those keys locally, you will have
-an easier time cloning repositories.
+*if* you are [using ssh keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) 
+to connect to Github and have stored those keys locally, you will have an easier time cloning repositories.
+* It allows you to mount the CERN-VM file system (CVMFS), giving you more access to CMS software and
+calibration information. CVMFS will be discussed in greater detail in the next module, but it is worth
+collecting all the necessary flags at the start.
 
 ~~~
-docker run -it --name myopendataproject -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
+docker run -it --name myopendataproject --volume "/cvmfs:/cvmfs:shared" -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
+
 ~~~
 {: .language-bash}
 ~~~
@@ -51,6 +55,12 @@ CMSSW should now be available.
 [21:53:43] cmsusr@docker-desktop ~/CMSSW_5_3_32/src $
 ~~~
 {: .output}
+
+> ## Possible issues on Windows
+> If the docker command exits without giving you this output on WSL2 (Windows), 
+> see [this post](https://opendata-forum.cern.ch/t/running-cms-opendata-containers-in-wsl2/30)
+> in the CERN Open Data forum
+{: .discussion}
 
 It might be worth breaking down this command for the interested user. For a more complete
 listing of options, see [the official Docker documentation](https://docs.docker.com/engine/reference/commandline/container_run/) on the ```run``` command. 
@@ -97,11 +107,6 @@ you're not planning on accessing those helper functions, the above should be
 enough.
 
 When you're done, you can just type ```exit``` to leave the Docker environment. 
-
-> ## Possible issues on Windows
-> If Docker is crashing on WSL2 (Windows), see [this post](https://opendata-forum.cern.ch/t/running-cms-opendata-containers-in-wsl2/30)
-> in the CERN Open Data forum.
-{: .discussion}
 
 
 ## Using Docker repeatedly
