@@ -23,16 +23,6 @@ cover containers and everything you can do with Docker, but reach out to the org
 if we are missing something. 
 
 
-## Install Docker
-
-There are many resources on the web to help you install Docker. You can start
-with [the official Docker site](https://docs.docker.com/get-docker/) or whatever you find
-that works for you. 
-
-Once you have installed Docker, we again recommend you follow the 
-[official Docker getting started/hello-world example](https://docs.docker.com/get-started/).
-If you can run this, you should be good with everything that follows!
-
 
 ## Using the proper image for CMS software
 
@@ -53,9 +43,14 @@ an easier time cloning repositories.
 
 ~~~
 docker run -it --name myopendataproject -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
-
 ~~~
 {: .language-bash}
+~~~
+Setting up CMSSW_5_3_32
+CMSSW should now be available.
+[21:53:43] cmsusr@docker-desktop ~/CMSSW_5_3_32/src $
+~~~
+{: .output}
 
 It might be worth breaking down this command for the interested user. For a more complete
 listing of options, see [the official Docker documentation](https://docs.docker.com/engine/reference/commandline/container_run/) on the ```run``` command. 
@@ -68,8 +63,7 @@ docker run -it cmsopendata/cmssw_5_3_32 /bin/bash
 ~~~
 {: .language-bash}
 
-The ```-it``` option means to start the instance in *interactive* mode and using a *pseudo-TTY*
-display. 
+The ```-it``` option means to start the instance in interactive mode
 
 Adding the following assigns a ```name``` to the instance so that we can refer back
 to this environment and still access any files we created in there. You can, of course,
@@ -80,7 +74,8 @@ choose a different name than ```myopendataproject```! :)
 
 ~~~
 {: .language-bash}
-Adding the following gives us X11-forwarding.
+Adding the following gives us X11-forwarding, though this will not work with
+Windows10 WSL2 Linux.
 
 ~~~
 ... --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" ...
@@ -103,6 +98,11 @@ enough.
 
 When you're done, you can just type ```exit``` to leave the Docker environment. 
 
+> ## Possible issues on Windows
+> If Docker is crashing on WSL2 (Windows), see [this post](https://opendata-forum.cern.ch/t/running-cms-opendata-containers-in-wsl2/30)
+> in the CERN Open Data forum.
+{: .discussion}
+
 
 ## Using Docker repeatedly
 
@@ -121,15 +121,13 @@ both below.
 
 The easiest way to start a docker instance that you want to return to is using the ```--name```
 option, as shown in the first example. If you've named your instance similarly, you can
-```start``` the instance, just by providing the name. You will also use ```-i``` for interactive
-rather than ```-it``` for the *pseudo-TTY*  display. It will still come up as normal. 
+```start``` the instance, just by providing the name. 
+You will also use ```-i``` for interactive rather than ```-it```. It will still come up as normal. 
 
 Note also that you do not need the full ```cmsopendata/cmssw_5_3_32 ``` argument anymore. 
 
-So to re-```start``` your container, just do 
-
-If you ever just wanted to open the image quickly, you can just run the following
-and you will still have X11-forwarding and the mounted disk volumes, assuming you 
+So to re-```start``` your container, just do the following
+and you will still have X11-forwarding (on Linux and Mac) and the mounted disk volumes, assuming you 
 ran the full command earlier. 
 
 ~~~
@@ -176,7 +174,12 @@ Voila! You should be back in the same container.
 
 > ## CHALLENGE! Test X11 forwarding
 >
-> Go into the Docker environment and open ROOT, simply by typing ```root``` on the command line. 
+> _Note that X11 forwarding does not work with Windows10 WSL2 linux so you won't have access
+> to the ROOT GUI._
+>
+> For Mac and Linux users,
+> open the CMS open data container with ```docker start...``` or ```docker run...``` 
+> as instructed above and open ROOT, simply by typing ```root``` on the command line. 
 > Do you see the ROOT splash screen pop up? 
 > If not, check that you followed all the instructions
 > above correctly or contact the facilitators. 
@@ -251,15 +254,6 @@ by Github. The way you will want to clone a repository is as follows.
 
 ~~~
 git clone git://github.com/mattbellis/cern-opendata-sandbox
-~~~
-{: .language-bash}
-
-Normally one would run the following command (and is what Github shows you usually from the 
-webpage), but this does not work in the containers. 
-**Running the following command will probaly fail and give you errors about
-access rights.**
-~~~
-git clone git@github.com:mattbellis/cern-opendata-sandbox.git
 ~~~
 {: .language-bash}
 

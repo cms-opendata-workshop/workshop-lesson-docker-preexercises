@@ -133,6 +133,8 @@ already installed `brilws` in the container.
 If everything worked, you should be able to run `brilcalc` to check its version and 
 to get the luminosity for a sample run. 
 
+_Note that the first time you run the `brilcalc` commands, it can take up to 7 minutes to run!_
+
 ~~~
 brilcalc --version
 
