@@ -1,7 +1,7 @@
 ---
 title: "Setting up CVMFS for use with the luminosity tools"
-teaching: 0
-exercises: 0
+teaching: 15
+exercises: 45
 questions:
 - "How do I access some CMS-specific software"
 objectives:
