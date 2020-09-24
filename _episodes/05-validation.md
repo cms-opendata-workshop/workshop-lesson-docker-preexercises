@@ -64,7 +64,12 @@ scram b
 
 You can safely ignore the warning.
 
-> **IMPORTANT NOTE**: Depending on your system, there could be some issues with the shared clipboard between the host machine and the Docker container.  This means that it is possible that you cannot copy the instrucitons in this episode directly into your VM session.  Unfortunately, apparently there is no easy solution for this problem so you might have to change the files by hand.  
+> **IMPORTANT NOTE**: Depending on your system, there could be some issues with the shared clipboard between the host machine and the Docker container.  
+> This means that it is possible that you cannot copy the instrucitons 
+> in this episode directly into your Docker session.  
+>
+> One thing you can try is `Shift+Ctrl+V` when pasting into your Docker terminal,
+> rather than `Ctrl-V`. That sometimes will work.
 >
 > The quickest workaround might be using `ssh` and/or `scp` commands to copy the required files to some other machine that you have access to, from the Docker container as well as from the host machine.  For instance, if you had access to an `lxplus` computer at cern, you could copy a certain file from the Docker container to the lxplus computer.  On the Docker container you could do:
 >
