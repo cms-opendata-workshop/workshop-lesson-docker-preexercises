@@ -1,7 +1,7 @@
 ---
-title: "Setting up CVMFS for use with the luminosity tools"
+title: "Setting up CVMFS"
 teaching: 15
-exercises: 45
+exercises: 30
 questions:
 - "How do I access some CMS-specific software"
 objectives:
@@ -83,6 +83,13 @@ CVMFS_CLIENT_PROFILE=single
 > cvmfs_config probe
 > ~~~
 > {: .bash}
+>
+> You may even find that even *during* a session, you need to re-run
+> ~~~
+> cvmfs_config probe
+> ~~~
+> {: .bash}
+> on your host machine, even on Linux or Mac.
 {: .discussion}
 
 ## Set up your Docker container
@@ -142,6 +149,8 @@ brilcalc lumi -c web -r 160431
 ~~~
 {: .bash}
 
+It should be noted that during the workshop, we will have an entire exercise dedicated to using this tool
+to calculate the luminosity for your datasets. 
 
 
 {% include links.md %}

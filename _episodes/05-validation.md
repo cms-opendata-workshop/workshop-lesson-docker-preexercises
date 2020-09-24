@@ -1,7 +1,7 @@
 ---
 title: "Test and validate"
 teaching: 10
-exercises: 70
+exercises: 30
 questions:
 - "What is in the CMS Docker image?"
 - "How do I test and validate my Docker container?"
@@ -21,7 +21,11 @@ keypoints:
 
 The Docker container we just installed provides CMS computing environment to be used with the 2011 and 2012 CMS open data. The Docker container uses Scientific Linux CERN.  As it was mentioned before, it comes equipped with the [ROOT](http://root.cern.ch/) framework and [CMSSW](http://cms-sw.github.io/).
 
-An important feature of the image is the availability of the [CernVM File System](https://cernvm.cern.ch/fs/).  Thanks to the cvmfs client installed, the VM gets the CMS software (CMSSW) from the shared `/cvmfs/cms.cern.ch` area (physically at CERN but mounted locally) and the jobs, running on the CMS open data VM, read the conditions data from `/cvmfs/cms-opendata-conddb.cern.ch`. Access to the data is through [XRootD](https://xrootd.slac.stanford.edu/).
+An important feature of the image is the availability of the [CernVM File System](https://cernvm.cern.ch/fs/).  
+Thanks to the cvmfs client installed, the Docker instance gets the CMS software (CMSSW) 
+from the shared `/cvmfs/cms.cern.ch` area (physically at CERN but mounted locally) 
+and the jobs, running on the CMS open data Docker image, read the conditions data 
+from `/cvmfs/cms-opendata-conddb.cern.ch`. Access to the data is through [XRootD](https://xrootd.slac.stanford.edu/).
 
 
 ## Run a simple *demo* for testing and validating
@@ -139,7 +143,7 @@ ln -sf /cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA.db FT_53_LV5_AN1_RU
 ~~~
 {: .language-bash}
 
-and make sure the cms-opendata-conddb.cern.ch directory has actually expanded in your VM. One way of doing this is executing:
+and make sure the cms-opendata-conddb.cern.ch directory has actually expanded in your Docker instance. One way of doing this is executing:
 
 ~~~
 ls -l /cvmfs/

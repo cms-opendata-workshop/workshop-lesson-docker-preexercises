@@ -1,7 +1,7 @@
 ---
 title: "Using Docker with the CMS open data"
 teaching: Self-guided
-exercises: 60 min
+exercises: 40 min
 questions:
 - "How do I use docker to effectively interface with the CMS open data?"
 objectives:
@@ -20,6 +20,7 @@ keypoints:
 This exercise will walk you through setting up and familiarizing yourself with Docker, so that
 you can effectively use it to interface with the CMS open data. It is *not* meant to completely 
 cover containers and everything you can do with Docker, but reach out to the organizers
+using the [dedicated Mattermost channel](https://mattermost.web.cern.ch/cmsopeyyndatatheo/channels/town-square)
 if we are missing something. 
 
 
@@ -44,8 +45,13 @@ to connect to Github and have stored those keys locally, you will have an easier
 calibration information. CVMFS will be discussed in greater detail in the next module, but it is worth
 collecting all the necessary flags at the start.
 
+Keep in mind, on some systems, these file/directory paths might be different,
+so reach out to the organizers through the 
+[dedicated Mattermost channel](https://mattermost.web.cern.ch/cmsopeyyndatatheo/channels/town-square)
+if you have issues.
+
 ~~~
-docker run -it --name myopendataproject --volume "/cvmfs:/cvmfs:shared" -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" cmsopendata/cmssw_5_3_32 /bin/bash
+docker run -it --name myopendataproject --volume "/cvmfs:/cvmfs:shared" -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw"  cmsopendata/cmssw_5_3_32 /bin/bash
 
 ~~~
 {: .language-bash}
@@ -88,12 +94,14 @@ Adding the following gives us X11-forwarding, though this will not work with
 Windows10 WSL2 Linux.
 
 ~~~
-... --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" ...
+... --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw"  ...
 
 ~~~
 {: .language-bash}
 
 And the following mounts our local ```.ssh``` directory as a local *volume*. 
+(If you're not comfortable working with the `ssh` keys or you don't plan on using
+ Github much for your workflow, you can safely ignore this part)
 
 ~~~
 ... -v ${HOME}/.ssh:/home/cmsusr/.ssh  ...
@@ -248,6 +256,8 @@ docker cp localfile.tmp myopendataproject:/home/cmsusr/CMSSW_5_3_32/src/
 
 
 ## Checkout a git repository 
+
+Give this part a shot *if* you are confident with git and Github.
 
 We assume that you have configured your *local* machine to be able to access
 Github and have setup your machine to use the [ssh keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh). If you have, then the above instructions are mounting your local

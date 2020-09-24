@@ -15,7 +15,8 @@ and this workshop and there is a separate pre-exercise for that.
 You should definitely take time to go through either this or the VM exercise before
 participating in the workshop. 
 
-If you run into problems with any of these steps, please reach out to the organizers. 
+If you run into problems with any of these steps, please reach out to the organizers
+through the dedicated [Mattermost channel](https://mattermost.web.cern.ch/cmsopendatatheo/channels/town-square). 
 
 <!-- this is an html comment -->
 
