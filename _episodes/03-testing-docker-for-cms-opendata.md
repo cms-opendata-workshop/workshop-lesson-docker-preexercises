@@ -253,6 +253,26 @@ docker cp localfile.tmp myopendataproject:/home/cmsusr/CMSSW_5_3_32/src/
 ~~~
 {: .language-bash}
 
+## Mounting a local volume
+
+Sometimes you may want to mount a filesystem from your local machine or some other remote system
+so that your docker image can see it. We used this when we first started our Docker instances, but let's 
+look at this a bit closer. 
+
+The basic usage is 
+
+~~~
+docker run -v <path on host>:<path in container> <image>
+~~~
+{: .language-bash}
+
+Where the `path on host` is the full path to the local file system/directory you want to 
+make visible to docker. The `path in container` is where it will be mounted in your
+Docker container. 
+
+There are more options and if you want to read more, please visit the 
+[official Docker documentation](https://docs.docker.com/storage/volumes/).
+
 
 
 ## Checkout a git repository 
