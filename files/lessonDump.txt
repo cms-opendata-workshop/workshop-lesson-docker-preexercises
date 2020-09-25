@@ -1,0 +1,570 @@
+This lesson is in the early stages of development (Alpha version)
+ Toggle navigation     [The CMS logo] Home
+    * Code_of_Conduct
+    * Setup
+    * Episodes
+          o Introduction
+          o Installing_Docker
+          o Using_Docker_with_the_CMS_open_data
+          o Setting_up_CVMFS
+          o Test_and_validate
+          o All_in_one_page_(Beta)
+    * Extras
+          o Reference
+    * License
+    * Improve_this_page
+[                    ]
+****** Docker_pre-exercises ******
+****** Introduction ******
+     ***** Overview *****
+     Teaching: 5 min
+     Exercises: 0 min
+     Questions
+         * What is Docker?
+         * What is the point of these exercises?
+     Objectives
+         * Learn about Docker and why we’re using it
+Let’s learn about Docker and why we’re using it!
+Regardless of what you encounter in this lesson, the definitive guide is any
+official documentation provided by Docker.
+     ***** What is Docker? *****
+     From the Docker_website
+     A container is a standard unit of software that packages up code and
+     all its dependencies so the application runs quickly and reliably
+     from one computing environment to another. A Docker container image
+     is a lightweight, standalone, executable package of software that
+     includes everything needed to run an application: code, runtime,
+     system tools, system libraries and settings.
+     In short, Docker allows a user to work in a computing environment
+     that has been frozen with respect to interdependent libraries and
+     code and related tools. This means that you can use the same software
+     that analysts were using 10 years ago (for example) without
+     downloading all the relevant 10-year-old libraries. :)
+     ***** What can I learn here? *****
+     As much as we’d like, we can’t give you a complete overview of
+     Docker. However, we do hope to explain why we run Docker in the way
+     we do so that you gain some understanding. More specifically, we’ll
+     be showing you how to set up Docker for not just this workshop, but
+     for interfacing with the CMS open data in general
+     ***** Key Points *****
+         * Docker is an implementation of a tool called a container that
+           gives us a self-consistent computing environment
+         * Docker is widely used these days in both industry and academic
+           research
+         * Docker is one way that you can interface with CMS data using
+           the same computing tools as CMS collaborators
+===============================================================================
+****** Installing Docker ******
+     ***** Overview *****
+     Teaching: 5 min
+     Exercises: 15 min
+     Questions
+         * What equipment do I need?
+         * How do I install Docker?
+     Objectives
+         * Install Docker on your machine
+Installing Docker is relatively straightforward, particularly because of the
+excellent documentation they provide. Still you want to set aside some time to
+do it properly and test it out.
+***** Installing *****
+Go to the offical Docker_site_and_their_installation_instructions to install
+Docker for your operating system.
+We see no need to go beyond the documentation they provide so we leave it up to
+you to follow their installation procedure.
+***** Testing *****
+As you walk through their documentation, you will eventually come to a point
+where you will run a very simple test, usually involving their hello-world
+container.
+You can find their documentation for this step here.
+Testing their code can be summed up by the ability to run (without generating
+any errors) the following commands.
+docker --version
+docker run hello-world
+     ***** Key Points *****
+         * For up-to-date details for installing Docker, the official
+           documentation is the best bet.
+         * Make sure you were able to download and run Docker’s hello-
+           world example.
+===============================================================================
+****** Using Docker with the CMS open data ******
+     ***** Overview *****
+     Teaching: Self-guided min
+     Exercises: 40 min min
+     Questions
+         * How do I use docker to effectively interface with the CMS open
+           data?
+     Objectives
+         * Download (fetch) the correct docker image
+         * Fire up docker in the most useful way for CMS Open Data
+           analysis
+         * Use docker in a persistent way
+         * Copy data out of the docker environment
+         * Access Github repositories from within a docker environment
+***** Overview *****
+This exercise will walk you through setting up and familiarizing yourself with
+Docker, so that you can effectively use it to interface with the CMS open data.
+It is not meant to completely cover containers and everything you can do with
+Docker, but reach out to the organizers using the dedicated_Mattermost_channel
+if we are missing something.
+***** Using the proper image for CMS software *****
+The first time you go to run Docker, the following command will fetch the
+docker image and put you into a bash shell in which you have access to a
+complete CMS software release that is appropriate for interfacing with the 2011
+and 2012 7 and 8 TeV datasets. It may take some time to download the full
+image, even as long as 20-30 minutes, depending on the speed of your internet
+connection.
+This command and some extra guidance can also be found on the Open_Data_Portal
+introduction_to_Docker, however the following command differs in a few ways:
+    * It allows for X11 forwarding That means that if you run a program from
+      within Docker that pops up any windows or graphics, like ROOT, they will
+      show up.
+    * It allows you to access ssh keys from inside the docker container. This
+      means that if you are using_ssh_keys to connect to Github and have stored
+      those keys locally, you will have an easier time cloning repositories.
+    * It allows you to mount the CERN-VM file system (CVMFS), giving you more
+      access to CMS software and calibration information. CVMFS will be
+      discussed in greater detail in the next module, but it is worth
+      collecting all the necessary flags at the start.
+Keep in mind, on some systems, these file/directory paths might be different,
+so reach out to the organizers through the dedicated_Mattermost_channel if you
+have issues.
+docker run -it --name myopendataproject --volume "/cvmfs:/cvmfs:shared" -v $
+{HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --
+volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw"  cmsopendata/
+cmssw_5_3_32 /bin/bash
+
+Setting up CMSSW_5_3_32
+CMSSW should now be available.
+[21:53:43] cmsusr@docker-desktop ~/CMSSW_5_3_32/src $
+     ***** Possible issues on Windows *****
+     If the docker command exits without giving you this output on WSL2
+     (Windows), see this_post in the CERN Open Data forum
+It might be worth breaking down this command for the interested user. For a
+more complete listing of options, see the_official_Docker_documentation on the
+run command.
+To start a CMSSW container instance and open it in a bash shell, one would need
+only type
+docker run -it cmsopendata/cmssw_5_3_32 /bin/bash
+
+The -it option means to start the instance in interactive mode
+Adding the following assigns a name to the instance so that we can refer back
+to this environment and still access any files we created in there. You can, of
+course, choose a different name than myopendataproject! :)
+... --name myopendataproject ...
+
+Adding the following gives us X11-forwarding, though this will not work with
+Windows10 WSL2 Linux.
+... --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/
+cmsusr/.Xauthority:rw"  ...
+
+And the following mounts our local .ssh directory as a local volume. (If you’re
+not comfortable working with the ssh keys or you don’t plan on using Github
+much for your workflow, you can safely ignore this part)
+... -v ${HOME}/.ssh:/home/cmsusr/.ssh  ...
+
+In the lesson on access luminosity information, we explain how to mount the
+CERN-VM fileystem which will add some additional flags. However, if you’re not
+planning on accessing those helper functions, the above should be enough.
+When you’re done, you can just type exit to leave the Docker environment.
+***** Using Docker repeatedly *****
+The next time you want to run Docker, it will not need to download any
+significant data so it should open in seconds. You could choose to run the same
+command as before and while that would work and quickly put you into a Docker
+environment, there are some issues with this. Most significantly, any files
+that you make or any code that you write in that environment will not be there!
+Instead of the above command, we want to run Docker in a persistent way so that
+we keep going into the same working area with all our files and code saved each
+time.
+There are two ways to do this: by giving your container instance a name or by
+making sure you reference the container id. The former approach is probably
+easier and preferred, but we discuss both below.
+**** Start docker by name ****
+The easiest way to start a docker instance that you want to return to is using
+the --name option, as shown in the first example. If you’ve named your instance
+similarly, you can start the instance, just by providing the name. You will
+also use -i for interactive rather than -it. It will still come up as normal.
+Note also that you do not need the full cmsopendata/cmssw_5_3_32 argument
+anymore.
+So to re-start your container, just do the following and you will still have
+X11-forwarding (on Linux and Mac) and the mounted disk volumes, assuming you
+ran the full command earlier.
+docker start -i myopendataproject
+**** Start/Attach to a particular process ****
+If you did not name your container instance but still want to return to a very
+specifc environment, you will need to start and then attach to the exact same
+Docker instance as before. First of all, you want to see what other Docker
+processes we have running. To do this, run the following command
+docker ps -a
+You’ll see a list of docker processes that may look something like the
+following (the exact output will vary from user to user).
+CONTAINER ID        IMAGE                      COMMAND                  CREATED
+STATUS                      PORTS               NAMES
+4f323c317b90        hello-world                "/hello"                 3
+minutes ago       Exited (0) 3 minutes ago                        modest_jang
+7719a7d74190        cmsopendata/cmssw_5_3_32   "/opt/cms/entrypoint…"   9
+minutes ago       Exited (0) 2 minutes ago                        happy_greider
+8939ade0bfac        cmsopendata/cmssw_5_3_32   "/opt/cms/entrypoint…"   16
+hours ago        Exited (128) 16 hours ago
+hungry_bhaskara
+e914cef3c45a        cmsopendata/cmssw_5_3_32   "/opt/cms/entrypoint…"   6 days
+ago          Exited (1) 9 minutes ago
+beautiful_tereshkova
+b3a888c059f7        cmsopendata/cmssw_5_3_32   "/opt/cms/entrypoint…"   13 days
+ago         Exited (0) 13 days ago
+affectionate_ardinghelli
+You’ll want to attach using the CONTAINER ID. In the above example, I know that
+I’ve been using the most recent container instance for cmsopendata,
+7719a7d74190. So to reattach, I do
+docker start 7719a7d74190
+docker attach 7719a7d74190
+Voila! You should be back in the same container.
+     ***** CHALLENGE! Test X11 forwarding *****
+     Note that X11 forwarding does not work with Windows10 WSL2 linux so
+     you won’t have access to the ROOT GUI.
+     For Mac and Linux users, open the CMS open data container with docker
+     start... or docker run... as instructed above and open ROOT, simply
+     by typing root on the command line. Do you see the ROOT splash screen
+     pop up? If not, check that you followed all the instructions above
+     correctly or contact the facilitators.
+     To exit the ROOT interpreter type .q.
+     If you find that X11 forwarding is not working, try typing the
+     following before going starting your Docker container.
+     xhost local:root
+     ***** CHALLENGE! Test persistence *****
+     Go into the Docker environment and create a test file using some
+     simple shell commands. Type the following exactly as you see it. It
+     will dump some text into a file and then print the contents of the
+     file to the screen
+     echo "I am still here" > test.tmp
+     cat test.tmp
+
+     After you’ve done this, exit out of the container and try to attach
+     to the same instance. If you did it correctly, you should be able to
+     list the contents of the directory with ls -l and see your file from
+     before! If not, check that you followed all the instructions above
+     correctly or contact the facilitators.
+***** Copy file(s) into or out of a container *****
+Sometimes you will want to copy a file directly into or out of a container.
+Let’s start with copying a file out.
+Suppose you have created your myopendataproject container and you did the
+challenge question above to Test persistence. In your docker image, there
+should be a file now called test.tmp Run the following on your local machine
+and not in a docker environment. It should copy the file out and onto your
+local machine where you can inspect it.
+docker cp myopendataproject:/home/cmsusr/CMSSW_5_3_32/src/test.tmp .
+If you want to copy a file into a container instance, it works the way you
+might expect. Suppose you have a local file called localfile.tmp. You can copy
+it into the same instance as follows.
+docker cp localfile.tmp myopendataproject:/home/cmsusr/CMSSW_5_3_32/src/
+***** Mounting a local volume *****
+Sometimes you may want to mount a filesystem from your local machine or some
+other remote system so that your docker image can see it. We used this when we
+first started our Docker instances, but let’s look at this a bit closer.
+The basic usage is
+docker run -v <path on host>:<path in container> <image>
+Where the path on host is the full path to the local file system/directory you
+want to make visible to docker. The path in container is where it will be
+mounted in your Docker container.
+There are more options and if you want to read more, please visit the official
+Docker_documentation.
+***** Checkout a git repository *****
+Give this part a shot if you are confident with git and Github.
+We assume that you have configured your local machine to be able to access
+Github and have setup your machine to use the ssh_keys. If you have, then the
+above instructions are mounting your local drive such that your Docker
+containers can access those ssh keys.
+I’ve prepared a minimal github repository for you to clone for testing. To
+clone it, you will clone the directory slightly differently than the default
+procedure provided by Github. The way you will want to clone a repository is as
+follows.
+git clone git://github.com/mattbellis/cern-opendata-sandbox
+     ***** Challenge! *****
+     Check out one of your own Github repositories to a container. Make
+     some minor changes to one of the files and push it back to Github,
+     just to verify that you can do this. This will make it much easier
+     for you to save your work when you are developing your analysis
+     pipeline.
+     ***** Key Points *****
+         * Docker is easy to use but there are number of options you have
+           to be careful with in order to use it effectively with the CMS
+           open data
+===============================================================================
+****** Setting up CVMFS ******
+     ***** Overview *****
+     Teaching: 15 min
+     Exercises: 30 min
+     Questions
+         * How do I access some CMS-specific software
+     Objectives
+         * Install the CVMFS on your local machine
+         * Learn to mount that volume in your container
+         * Use the CVMFS to access and run tools to calculate the
+           luminosity for specific run periods
+At some point you may want to calculate the luminosity or study trigger effects
+for the data you are analyzing. CMS uses a tool called brilcalc but it is not
+included in the Docker image.
+To get around this, we mount drives at CERN in the Docker container when you
+fire it up so that you can call this and perhaps other tools.
+To learn more about brilcalc you can read the CERN_Open_Data_Portal
+documentation. This lesson however is just to help you test that you can access
+this tool.
+***** Installing CVMFS locally *****
+From the CVMFS_documentation
+The CernVM-File System (CernVM-FS) provides a scalable, reliable and low-
+maintenance software distribution service. It was developed to assist High
+Energy Physics (HEP) collaborations to deploy software on the worldwide-
+distributed computing infrastructure used to run data processing applications.
+CernVM-FS is implemented as a POSIX read-only file system in user space (a FUSE
+module). Files and directories are hosted on standard web servers and mounted
+in the universal namespace /cvmfs.
+In the following sections, we’ll direct you to the appropriate pages to
+download and install CVMFS locally. This should be done on your local machine
+and not in the container.
+Let’s walk through these steps.
+**** Get CVMFS ****
+Follow the installation_instructions to download the software for your
+particular OS.
+**** Setup CVMFS ****
+Next, you’ll want to set things up on your local machine. Follow these
+instructions carefully for your system.
+One part of the setup which can be confusing is the content of the file /etc/
+cvmfs/default.local. The following lines should work, if they are the sole
+content of the file.
+CVMFS_REPOSITORIES=cms.cern.ch,cms-opendata-conddb.cern.ch,cms-bril.cern.ch
+CVMFS_HTTP_PROXY=DIRECT
+CVMFS_CLIENT_PROFILE=single
+     ***** Check the installation *****
+     Make sure you verify_the_installation. Check that link for the latest
+     commands, but usually this involves running
+     cvmfs_config probe
+     or
+     sudo systemctl restart autofs
+     ***** Possible issues *****
+     For some systems, you may run into some issues.
+     On WSL2 Ubuntu, after the installation, on each session, one has to
+     run the following
+     sudo /usr/sbin/automount --pid-file /var/run/autofs.pid
+     cvmfs_config probe
+     You may even find that even during a session, you need to re-run
+     cvmfs_config probe
+     on your host machine, even on Linux or Mac.
+***** Set up your Docker container *****
+In the previous instructions on starting up your Docker container, we included
+the commands to start your container with CVMFS mounted.
+... --volume "/cvmfs:/cvmfs:shared" ...
+This makes sure the container can see this CVMFS file system.
+If you ran all the correct commands in the previous exercise, you can now start
+the container by name
+docker start -i myopendataproject
+Or, if you wanted to start a brand new, fresh container with the CVMFS file
+system mounted, you can run
+docker run -it --name mycvmfs --volume "/cvmfs:/cvmfs:shared" cmsopendata/
+cmssw_5_3_32 /bin/bash
+Once you have started the container and are in the CMSSW 5.3.32 environment,
+run the following commands to set some local environment variables and then
+install brilcalc using the python pip command.
+export PATH=$HOME/.local/bin:/cvmfs/cms-bril.cern.ch/brilconda/bin:$PATH
+
+pip install --user brilws
+Each time you login, you will have to re-run that export command, even if you
+have already installed brilws in the container.
+***** Test it out and run brilcalc *****
+If everything worked, you should be able to run brilcalc to check its version
+and to get the luminosity for a sample run.
+Note that the first time you run the brilcalc commands, it can take up to 7
+minutes to run!
+brilcalc --version
+
+brilcalc lumi -c web -r 160431
+It should be noted that during the workshop, we will have an entire exercise
+dedicated to using this tool to calculate the luminosity for your datasets.
+     ***** Key Points *****
+         * Installing the CVMFS can make some parts of the analysis much
+           easier
+         * Care must be given though to setting up your environment
+           properly.
+===============================================================================
+****** Test and validate ******
+     ***** Overview *****
+     Teaching: 10 min
+     Exercises: 30 min
+     Questions
+         * What is in the CMS Docker image?
+         * How do I test and validate my Docker container?
+     Objectives
+         * Learn about the details of the CMS Docker container
+         * Test and validate the CMS Docker image by running a CMSSW job.
+     ***** Helpline *****
+     Remember that we are always available to help. Our [Mattermost]
+     [mattermost] channel is open.
+***** Know your Docker image *****
+The Docker container we just installed provides CMS computing environment to be
+used with the 2011 and 2012 CMS open data. The Docker container uses Scientific
+Linux CERN. As it was mentioned before, it comes equipped with the ROOT
+framework and CMSSW.
+An important feature of the image is the availability of the CernVM_File
+System.
+Thanks to the cvmfs client installed, the Docker instance gets the CMS software
+(CMSSW) from the shared /cvmfs/cms.cern.ch area (physically at CERN but mounted
+locally) and the jobs, running on the CMS open data Docker image, read the
+conditions data from /cvmfs/cms-opendata-conddb.cern.ch. Access to the data is
+through XRootD.
+***** Run a simple demo for testing and validating *****
+The validation procedure tests that the CMS environment is installed and
+operational on your Docker container, and that you have access to the CMS Open
+Data files. It also access the conditions data from the shared cvmfs area and
+caches them. This last action will save us time during the workshop. These
+steps also give you a quick introduction to the CMS environment.
+Run the following command to create the CMS runtime variables:
+cmsenv
+Create a working directory for the demo analyzer, change to that directory and
+create a skeleton for the analyzer:
+mkdir Demo
+cd Demo
+mkedanlzr DemoAnalyzer
+Come back to the main src area:
+cd ../
+Compile the code:
+scram b
+You can safely ignore the warning.
+     IMPORTANT NOTE: Depending on your system, there could be some issues
+     with the shared clipboard between the host machine and the Docker
+     container.
+     This means that it is possible that you cannot copy the instrucitons
+     in this episode directly into your Docker session.
+     One thing you can try is Shift+Ctrl+V when pasting into your Docker
+     terminal, rather than Ctrl-V. That sometimes will work.
+     The quickest workaround might be using ssh and/or scp commands to
+     copy the required files to some other machine that you have access
+     to, from the Docker container as well as from the host machine. For
+     instance, if you had access to an lxplus computer at cern, you could
+     copy a certain file from the Docker container to the lxplus computer.
+     On the Docker container you could do:
+     scp myfile.txt myusername@lxplus.cern.ch:.
+     to copy a hypothetical file myfile.txt to lxplus, and then on the
+     host
+     scp myusername@lxplus.cern.ch:myfile.txt .
+     to copy the same file back to your host machine. Then you can edit
+     the file locally and reverse the process to get it back to your
+     Docker container.
+     It could also be possible to have direct access from the host to the
+     Docker container. This youtube_tutorial might be of help for that
+     option.
+Before launching the job, let’s modify the configuration file (do not worry,
+you will learn about all this stuff in a different lesson) so it is able access
+a CMS open data file and cache the conditions data. As it was mentioned, this
+will save us time later.
+Open the demoanalyzer_cfg.py file using the vi editor (here you can find a good
+cheatsheet for that editor).
+vi Demo/DemoAnalyzer/demoanalyzer_cfg.py
+Replace file:myfile.root with root://eospublic.cern.ch//eos/opendata/cms/
+Run2011A/ElectronHad/AOD/12Oct2013-v1/20001/001F9231-F141-E311-8F76-
+003048F00942.root to point to an example file.
+Chage also the maximum number of events to 10. I.e., change -1to 10 in
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1)).
+In addition, insert, below the PoolSource module, the following lines:
+#needed to cache the conditions data
+process.load
+('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-
+conddb.cern.ch/FT_53_LV5_AN1_RUNA.db')
+process.GlobalTag.globaltag = 'FT_53_LV5_AN1::All'
+     ***** Take a look at the final validation config file *****
+     At the end, the config file should look like
+     import FWCore.ParameterSet.Config as cms
+     process = cms.Process("Demo")
+     process.load("FWCore.MessageService.MessageLogger_cfi")
+     process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32
+     (10) )
+     process.source = cms.Source("PoolSource",
+     # replace 'myfile.root' with the source file you want to use
+        fileNames = cms.untracked.vstring(
+            'root://eospublic.cern.ch//eos/opendata/cms/Run2011A/
+     ElectronHad/AOD/12Oct2013-v1/20001/001F9231-F141-E311-8F76-
+     003048F00942.root'
+        )
+     )
+     #needed to cache the conditions data
+     process.load
+     ('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+     process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-
+     opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA.db')
+     process.GlobalTag.globaltag = 'FT_53_LV5_AN1::All'
+
+     process.demo = cms.EDAnalyzer('DemoAnalyzer'
+     )
+
+     process.p = cms.Path(process.demo)
+Make symbolic links to the conditions database files from cvmfs:
+ln -sf /cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA FT_53_LV5_AN1
+ln -sf /cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA.db
+FT_53_LV5_AN1_RUNA.db
+and make sure the cms-opendata-conddb.cern.ch directory has actually expanded
+in your Docker instance. One way of doing this is executing:
+ls -l /cvmfs/
+total 18
+drwxr-xr-x  8 root root 4096 Jan 13  2014 cernvm-prod.cern.ch
+drwxr-xr-x 69  989  984 4096 Aug 29  2014 cms.cern.ch
+drwxr-xr-x 14  989  984 4096 Dec 16  2015 cms-opendata-conddb.cern.ch
+drwxr-xr-x  4  989  984 4096 May 28  2014 cvmfs-config.cern.ch
+Finally, run the cms executable with our configuration (it may really take a
+while, but the next time you want to run it will be faster):
+cmsRun Demo/DemoAnalyzer/demoanalyzer_cfg.py
+14-Sep-2020 02:28:06 GMT  Initiating request to open file root://
+eospublic.cern.ch//eos/opendata/cms/Run2011A/ElectronHad/AOD/12Oct2013-v1/
+20001/001F9231-F141-E311-8F76-003048F00942.root
+14-Sep-2020 02:28:13 GMT  Successfully opened file root://eospublic.cern.ch//
+eos/opendata/cms/Run2011A/ElectronHad/AOD/12Oct2013-v1/20001/001F9231-F141-
+E311-8F76-003048F00942.root
+Begin processing the 1st record. Run 166782, Event 340184599, LumiSection 309
+at 14-Sep-2020 02:28:26.283 GMT
+Begin processing the 2nd record. Run 166782, Event 340185007, LumiSection 309
+at 14-Sep-2020 02:28:26.284 GMT
+Begin processing the 3rd record. Run 166782, Event 340187903, LumiSection 309
+at 14-Sep-2020 02:28:26.285 GMT
+Begin processing the 4th record. Run 166782, Event 340227487, LumiSection 309
+at 14-Sep-2020 02:28:26.285 GMT
+Begin processing the 5th record. Run 166782, Event 340210607, LumiSection 309
+at 14-Sep-2020 02:28:26.285 GMT
+Begin processing the 6th record. Run 166782, Event 340256207, LumiSection 309
+at 14-Sep-2020 02:28:26.286 GMT
+Begin processing the 7th record. Run 166782, Event 340165759, LumiSection 309
+at 14-Sep-2020 02:28:26.286 GMT
+Begin processing the 8th record. Run 166782, Event 340396487, LumiSection 309
+at 14-Sep-2020 02:28:26.287 GMT
+Begin processing the 9th record. Run 166782, Event 340390767, LumiSection 309
+at 14-Sep-2020 02:28:26.287 GMT
+Begin processing the 10th record. Run 166782, Event 340435263, LumiSection 309
+at 14-Sep-2020 02:28:26.288 GMT
+14-Sep-2020 02:28:26 GMT  Closed file root://eospublic.cern.ch//eos/opendata/
+cms/Run2011A/ElectronHad/AOD/12Oct2013-v1/20001/001F9231-F141-E311-8F76-
+003048F00942.root
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 fileAction           -s file_close                             1        1
+    2 fileAction           -s file_open                              2        2
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 fileAction           PostEndRun
+    2 fileAction           pre-events       pre-events
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+System                  3                   3
+     ***** Key Points *****
+         * The CMS Docker image contains all the required ingredients to
+           start analyzing CMS open data.
+         * In order to test and validate the Docker container you can run
+           a simple CMSSW job.
+===============================================================================
+
+Content licensed under CC-BY_4.0 2020–2020 by The CMS Collaboration
+Lesson setup licensed under CC-BY_4.0 2018–2020 by The_Carpentries
+                        Edit_on_GitHub / Contributing / Source / Cite / Contact
+                  Using The_Carpentries_style version 9.5.3.

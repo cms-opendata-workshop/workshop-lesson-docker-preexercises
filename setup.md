@@ -11,4 +11,8 @@ title: Setup
 > check out the [Software Carpentry lesson on the Unix shell](https://swcarpentry.github.io/shell-novice/).
 {: .prereq}
 
+> If you experience problems with clipboard sharing between your host machine and your Docker container, the [text dump file](files/lessonDump.txt) of the lesson might be of help. You can download this file directly in your container using, e.g., the `wget` command, and follow along to copy the necessary commands directly from the text file.
+{: .testimonial}
+
+
 {% include links.md %}
