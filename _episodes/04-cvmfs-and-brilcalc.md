@@ -5,11 +5,10 @@ exercises: 30
 questions:
 - "How do I access some CMS-specific software"
 objectives:
-- "Install the CVMFS on your local machine"
-- "Learn to mount that volume in your container"
-- "Use the CVMFS to access and run tools to calculate the luminosity for specific run periods"
+- "Install the CVMFS on *either* your local machine *or* inside the Docker container"
+- "Use CVMFS to access and run tools used to calculate the luminosity for specific run periods"
 keypoints:
-- "Installing the CVMFS can make some parts of the analysis much easier"
+- "Installing CVMFS can make some parts of the analysis much easier"
 - "Care must be given though to setting up your environment properly."
 ---
 
@@ -23,6 +22,12 @@ so that you can call this and perhaps other tools.
 To learn more about `brilcalc` you can read the 
 [CERN Open Data Portal documentation](http://opendata.cern.ch/docs/cms-guide-luminosity-calculation).
 This lesson however is just to help you test that you can access this tool. 
+
+# Installing CVMSFS
+
+There are two ways to install CVMFS: 
+* Install CVMFS locally and then mount in the Docker container
+* Install CMVFS directly in the Docker container
 
 ## Installing CVMFS locally
 
@@ -135,7 +140,89 @@ pip install --user brilws
 Each time you login, you will have to re-run that `export` command, even if you have
 already installed `brilws` in the container. 
 
-## Test it out and run brilcalc
+## Install CVMFS directly in the Docker container 
+
+We'll be following the offical CVMFS documentation [here](https://cvmfs.readthedocs.io/en/stable/cpt-quickstart.html) 
+and [here](https://cvmfs.readthedocs.io/en/stable/cpt-configure.html) but with specific instructions
+for the CMSSW Docker image. 
+
+You'll want to launch Docker with a new `--privileged` flag that will make it easier to install
+new packages. If we are using the full command from the previous module, it would now look like
+this
+
+~~~
+docker run --privileged -it --name myopendataproject --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw" -v ${HOME}/cms_open_data_work:/home/cmsusr/cms_open_data_work:shared cmsopendata/cmssw_5_3_32 /bin/bash
+~~~
+{: .bash}
+
+The following command are all done *in the Docker container*. 
+
+Install the necessary packages using `yum`. This could take up to 30 minutes to install these packages. 
+
+At some point, the installation process will prompt you for your approval,
+`Is this ok [y/N]:`. You can enter `y`.
+
+~~~
+sudo yum install https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest.noarch.rpm
+sudo yum install -y cvmfs
+~~~
+{:.bash}
+~~~
+Loaded plugins: changelog, kernel-module, ovl, protectbase, tsflags, versionlock
+Setting up Install Process
+cvmfs-release-latest.noarch.rpm                                                                                                          | 5.5 kB     00:00
+Examining /var/tmp/yum-root-NokpI5/cvmfs-release-latest.noarch.rpm: cvmfs-release-2-6.noarch
+Marking /var/tmp/yum-root-NokpI5/cvmfs-release-latest.noarch.rpm to be installed
+EGI-trustanchors                                                                                                                         | 2.5 kB     00:00
+EGI-trustanchors/primary_db                                                                                                              |  56 kB     00:00
+.
+<more output follows>
+.
+~~~
+{: .output}
+
+Next you'll need to configure `autofs`, which [handles mounting of filesystems](https://www.kernel.org/doc/html/latest/filesystems/autofs.html).
+
+~~~
+sudo cvmfs_config setup
+~~~
+{: .bash}
+
+Edit the `/etc/cvmfs/default.local` file
+
+~~~
+sudo vi /etc/cvmfs/default.local
+~~~
+{: .bash}
+
+and add these lines:
+
+```
+CVMFS_REPOSITORIES='cms-opendata-conddb.cern.ch'
+CVMFS_HTTP_PROXY=DIRECT
+```
+
+Restart `autofs`
+
+~~~
+sudo service autofs restart
+~~~
+{: .bash}
+
+Verify the file system
+
+~~~
+cvmfs_config probe
+~~~
+{: .bash}
+
+> ## Heads-up!
+> You will need to repeat the last two commands every time you restart the container.
+>
+{: .callout}
+
+
+# Test it out and run brilcalc
 
 If everything worked, you should be able to run `brilcalc` to check its version and 
 to get the luminosity for a sample run. 
