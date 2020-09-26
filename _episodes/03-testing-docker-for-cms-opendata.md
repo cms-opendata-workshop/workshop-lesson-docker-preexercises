@@ -35,24 +35,18 @@ connection.
 
 This command and some extra guidance can also be found on the 
 [Open Data Portal introduction to Docker](http://opendata.cern.ch/docs/cms-guide-docker), however
-the following command differs in a few ways:
-* It allows for X11 forwarding That means that if you 
+the following command differs in that 
+it allows for X11 forwarding That means that if you 
 run a program from within Docker that pops up any windows or graphics, like ROOT, they will show up. 
-* It allows you to access ssh keys from inside the docker container. This means that 
-*if* you are [using ssh keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) 
-to connect to Github and have stored those keys locally, you will have an easier time cloning repositories.
-* It allows you to mount the CERN-VM file system (CVMFS), giving you more access to CMS software and
-calibration information. CVMFS will be discussed in greater detail in the next module, but it is worth
-collecting all the necessary flags at the start.
 
-Keep in mind, on some systems, these file/directory paths might be different,
+Keep in mind, on some systems, the file/directory paths might be different,
 so reach out to the organizers through the 
 [dedicated Mattermost channel](https://mattermost.web.cern.ch/cmsopeyyndatatheo/channels/town-square)
 if you have issues.
 
-~~~
-docker run -it --name myopendataproject --volume "/cvmfs:/cvmfs:shared" -v ${HOME}/.ssh:/home/cmsusr/.ssh --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw"  cmsopendata/cmssw_5_3_32 /bin/bash
 
+~~~
+docker run -it --name myopendataproject --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw"  cmsopendata/cmssw_5_3_32 /bin/bash
 ~~~
 {: .language-bash}
 ~~~
@@ -99,23 +93,50 @@ Windows10 WSL2 Linux.
 ~~~
 {: .language-bash}
 
-And the following mounts our local ```.ssh``` directory as a local *volume*. 
-(If you're not comfortable working with the `ssh` keys or you don't plan on using
- Github much for your workflow, you can safely ignore this part)
-
-~~~
-... -v ${HOME}/.ssh:/home/cmsusr/.ssh  ...
-
-~~~
-{: .language-bash}
-
-In the lesson on access luminosity information, we explain how to mount the
-*CERN-VM fileystem* which will add some additional flags. However, if 
-you're not planning on accessing those helper functions, the above should be 
-enough.
-
 When you're done, you can just type ```exit``` to leave the Docker environment. 
 
+### Additional flags
+
+Later on in this lesson we will show you two additional arguments to this command, both related to 
+mounting local directories on your laptop/desktop 
+such that it will be visible in the Docker container. 
+
+One example we will show you will walk you through creating a local working directory for your 
+analysis code. This means that you can edit your scripts or files
+*locally* and exectute them in Docker. It will give you much greater flexibility in using whatever
+backup or version control you are comfortable with. 
+
+In a separate module we will show you how to mount the CERN-VM file system (CVMFS), giving you more access to CMS software and
+calibration information. CVMFS will be discussed in greater detail in that module
+
+As these flags are discussed, we will modify this primary `docker` command in those sections.
+
+### Stopping docker instances
+
+As you are learning how to use Docker, you may find yourself with multiple instances running. Or maybe
+you started an instance with your favourite name with some set of flags and now you want to re-start
+that same instance but with new flags. In that case, you will want to stop and remove the running
+containers. 
+
+To **stop** all containers you would type the following on your local machine. 
+
+~~~
+docker stop $(docker ps -aq)
+~~~
+{: .bash}
+
+To **remove** all containers, you would type the following on your local machine. 
+
+~~~
+docker rm $(docker ps -aq)
+~~~
+{: .bash}
+
+> ## Don't worry!
+> Note that these commands *will not* remove the actual Docker *files* that you downloaded and may have taken
+> quite some time to download! Whew!
+>
+{: .callout}
 
 ## Using Docker repeatedly
 
@@ -256,8 +277,7 @@ docker cp localfile.tmp myopendataproject:/home/cmsusr/CMSSW_5_3_32/src/
 ## Mounting a local volume
 
 Sometimes you may want to mount a filesystem from your local machine or some other remote system
-so that your docker image can see it. We used this when we first started our Docker instances, but let's 
-look at this a bit closer. 
+so that your docker image can see it. Let's first see how this is done in a general way. 
 
 The basic usage is 
 
@@ -273,34 +293,102 @@ Docker container.
 There are more options and if you want to read more, please visit the 
 [official Docker documentation](https://docs.docker.com/storage/volumes/).
 
+When working with the CMS open data, you will find yourself using this approach in at
+least two ways:
+* Having a local working directory for all your editing/version control, etc.
+* Mounting the CVMFS file system (next module). 
 
+Note that all your compiling and executing still has to be done *in the Docker container*! 
+But having your source code also visible on your local laptop/desktop will make things easier for you. 
 
-## Checkout a git repository 
+Let's try this. First, before you start up your Docker image, create a local directory
+where you will be doing your code development. In the example below, I'm calling it
+`cms_open_data_work` and it will live in my `$HOME` directory. You may choose a shorter directory name if you like. :)
 
-Give this part a shot *if* you are confident with git and Github.
-
-We assume that you have configured your *local* machine to be able to access
-Github and have setup your machine to use the [ssh keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh). If you have, then the above instructions are mounting your local
-drive such that your Docker containers can access those ssh keys. 
-
-I've prepared a minimal github repository for you to clone for testing. To clone it, 
-you will clone the directory slightly differently than the default procedure provided
-by Github. The way you will want to clone a repository is as follows. 
-
-~~~
-git clone git://github.com/mattbellis/cern-opendata-sandbox
-~~~
-{: .language-bash}
-
-> ## Challenge!
-> 
-> Check out one of your own Github repositories to a container. Make some 
-> minor changes to one of the files and push it back to Github, just to verify
-> that you can do this. This will make it much easier for you to save your
-> work when you are developing your analysis pipeline.
->
->
+> ## Local machine
+> ~~~
+> cd # This is to make sure I'm in my home directory
+> mkdir cms_open_data_work
+> ~~~
+> {: .bash}
 {: .challenge}
+
+Then fire up your Docker container, adding the following
+~~~
+-v ${HOME}/cms_open_data_work:/home/cmsusr:shared
+~~~
+{: .bash}
+
+Your full `docker` command would then look like this
+
+> ## Local machine
+> ~~~
+> docker run -it --name myopendataproject --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw" -v ${HOME}/cms_open_data_work:/home/cmsusr/cms_open_data_work:shared cmsopendata/cmssw_5_3_32 /bin/bash
+> ~~~
+> {: .language-bash}
+{: .challenge}
+
+~~~
+Setting up CMSSW_5_3_32
+CMSSW should now be available.
+[21:53:43] cmsusr@docker-desktop ~/CMSSW_5_3_32/src $
+~~~
+{: .output}
+
+When your Docker container starts up, it puts you in `/home/cmsusr/CMSSW_5_3_32/src`, but your new mounted directory is `/home/cmsusr/cms_open_data_work`. 
+The easiest thing to do is to create a soft link to that directory from inside `/home/cmsusr/CMSSW_5_3_32/src` and then do your work in there. 
+
+
+> ## Docker container
+> ~~~
+> cd /home/cmsusr/CMSSW_5_3_32/src
+> ln -s ~/cms_open_data_work/
+> cd ~/cms_open_data_work/
+> ~~~
+> {: .language-bash}
+{: .prereq}
+
+Now, open a new terminal on your local machine (or simply exit out of your container) and check out one of the repositories
+you'll be working with. If you are not familiar with git/Github, check out the [Git pre-exercises](https://swcarpentry.github.io/git-novice/). 
+
+> ## Local machine
+> ~~~
+> cd ~/myopendataproject
+> git clone https://github.com/katilp/AOD2NanoAODOutreachTool.git AOD2NanoAOD
+> ~~~
+> {: .language-bash}
+{: .challenge}
+~~~
+Cloning into 'AOD2NanoAOD'...
+remote: Enumerating objects: 60, done.
+remote: Counting objects: 100% (60/60), done.
+remote: Compressing objects: 100% (54/54), done.
+remote: Total 343 (delta 29), reused 13 (delta 5), pack-reused 283
+Receiving objects: 100% (343/343), 743.11 KiB | 461.00 KiB/s, done.
+Resolving deltas: 100% (162/162), done.
+~~~
+{: .output}
+
+Next, go back into your Docker container (either in your other window or by restarting *that same* container, and see if you can 
+see this new directory that you checked out on your local machine. 
+
+> ## Docker container
+> ~~~
+> cd /home/cmsusr/CMSSW_5_3_32/src/cms_open_data_work
+> ls -l
+> ~~~
+> {: .language-bash}
+{: .prereq}
+~~~
+total 4
+drwxr-xr-x 8 cmsinst cmsinst 4096 Sep 26 20:48 AOD2NanoAOD
+~~~
+{: .output}
+
+Voila! You now have a workflow where you can edit files *locally*, using whatever
+tools are on your local machine, and then *exectute* them in the Docker 
+environment. 
+
 
 {% include links.md %}
 
