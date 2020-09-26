@@ -338,12 +338,22 @@ CMSSW should now be available.
 When your Docker container starts up, it puts you in `/home/cmsusr/CMSSW_5_3_32/src`, but your new mounted directory is `/home/cmsusr/cms_open_data_work`. 
 The easiest thing to do is to create a soft link to that directory from inside `/home/cmsusr/CMSSW_5_3_32/src` and then do your work in there. 
 
+> ## Warning!
+> Sometimes the local volume is mounted in the Docker container as the wrong user/group. It should be
+> `cmsusr` but sometimes is mounted as `cmsinst`. Note that in the following set of commands, we add a line
+> to change the user/group with the `chown` command. 
+>
+> If this is an issue, you'll also need to do this in Docker for any new directories you check out
+> on your local machine.
+{: .callout}
+
 
 > ## Docker container
 > ~~~
 > cd /home/cmsusr/CMSSW_5_3_32/src
+> sudo chown -R cmsusr.cmsusr ~/cms_open_data_work/
 > ln -s ~/cms_open_data_work/
-> cd ~/cms_open_data_work/
+> cd /home/cmsusr/CMSSW_5_3_32/src/cms_open_data_work/
 > ~~~
 > {: .language-bash}
 {: .prereq}
@@ -388,6 +398,62 @@ drwxr-xr-x 8 cmsinst cmsinst 4096 Sep 26 20:48 AOD2NanoAOD
 Voila! You now have a workflow where you can edit files *locally*, using whatever
 tools are on your local machine, and then *exectute* them in the Docker 
 environment. 
+
+Let's try compiling and running this new code!
+Note that to actually *compile* the code, we want to be in the
+`/home/cmsusr/CMSSW_5_3_32/src` directory.
+
+> ## Docker container
+> ~~~
+> cd /home/cmsusr/CMSSW_5_3_32/src
+> sudo chown -R cmsusr.cmsusr cms_open_data_work/AOD2NanoAOD/
+> scram b
+> ~~~
+> {: .language-bash}
+{: .prereq}
+~~~
+Reading cached build data
+>> Local Products Rules ..... started
+>> Local Products Rules ..... done
+>> Building CMSSW version CMSSW_5_3_32 ----
+>> Entering Package cms_open_data_work/AOD2NanoAOD
+>> Creating project symlinks
+Entering library rule at cms_open_data_work/AOD2NanoAOD
+>> Compiling edm plugin /home/cmsusr/CMSSW_5_3_32/src/cms_open_data_work/AOD2NanoAOD/src/AOD2NanoAOD.cc 
+>> Building edm plugin tmp/slc6_amd64_gcc472/src/cms_open_data_work/AOD2NanoAOD/src/cms_open_data_workAOD2NanoAOD/libcms_open_data_workAOD2NanoAOD.so
+Leaving library rule at cms_open_data_work/AOD2NanoAOD
+@@@@ Running edmWriteConfigs for cms_open_data_workAOD2NanoAOD
+--- Registered EDM Plugin: cms_open_data_workAOD2NanoAOD
+>> Leaving Package cms_open_data_work/AOD2NanoAOD
+>> Package cms_open_data_work/AOD2NanoAOD built
+>> Subsystem cms_open_data_work built
+>> Local Products Rules ..... started
+>> Local Products Rules ..... done
+gmake[1]: Entering directory `/home/cmsusr/CMSSW_5_3_32'
+>> Creating project symlinks
+>> Done python_symlink
+>> Compiling python modules cfipython/slc6_amd64_gcc472
+>> Compiling python modules python
+>> Compiling python modules src/cms_open_data_work/AOD2NanoAOD/python
+>> All python modules compiled
+@@@@ Refreshing Plugins:edmPluginRefresh
+>> Pluging of all type refreshed.
+>> Done generating edm plugin poisoned information
+gmake[1]: Leaving directory `/home/cmsusr/CMSSW_5_3_32'
+~~~
+{: .output}
+
+And now we can run it!
+
+> ## Docker container
+> ~~~
+> cd /home/cmsusr/CMSSW_5_3_32/src/cms_open_data_work/AOD2NanoAOD/
+> cmsRun configs/data_cfg.py
+> ~~~
+> {: .bash}
+{: .prereq}
+
+
 
 
 {% include links.md %}

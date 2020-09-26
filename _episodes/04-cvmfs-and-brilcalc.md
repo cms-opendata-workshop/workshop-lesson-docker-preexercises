@@ -125,20 +125,14 @@ docker run -it --name mycvmfs --volume "/cvmfs:/cvmfs:shared" cmsopendata/cmssw_
 ~~~
 {: .bash}
 
-
-Once you have started the container
-and are in the CMSSW 5.3.32 environment, run the following commands to set some local environment
-variables and then install `brilcalc` using the python `pip` command.
+If you want to simply build upon everything you have done already, your full Docker command
+would now look like
 
 ~~~
-export PATH=$HOME/.local/bin:/cvmfs/cms-bril.cern.ch/brilconda/bin:$PATH
-
-pip install --user brilws
+docker run -it --name myopendataproject --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw" -v ${HOME}/cms_open_data_work:/home/cmsusr/cms_open_data_work:shared --name mycvmfs --volume "/cvmfs:/cvmfs:shared" cmsopendata/cmssw_5_3_32 /bin/bash
 ~~~
 {: .bash}
 
-Each time you login, you will have to re-run that `export` command, even if you have
-already installed `brilws` in the container. 
 
 ## Install CVMFS directly in the Docker container 
 
@@ -198,8 +192,9 @@ sudo vi /etc/cvmfs/default.local
 and add these lines:
 
 ```
-CVMFS_REPOSITORIES='cms-opendata-conddb.cern.ch'
+CVMFS_REPOSITORIES=cms.cern.ch,cms-opendata-conddb.cern.ch,cms-bril.cern.ch
 CVMFS_HTTP_PROXY=DIRECT
+CVMFS_CLIENT_PROFILE=single
 ```
 
 Restart `autofs`
@@ -223,6 +218,22 @@ cvmfs_config probe
 
 
 # Test it out and run brilcalc
+
+Once you are in the container
+and are in the CMSSW 5.3.32 environment, and have CVMFS working through either of
+the above methods, you can then run the following commands to set some local environment
+variables and then install `brilcalc` using the python `pip` command.
+
+~~~
+export PATH=$HOME/.local/bin:/cvmfs/cms-bril.cern.ch/brilconda/bin:$PATH
+
+pip install --user brilws
+~~~
+{: .bash}
+
+Each time you login, you will have to re-run that `export` command, even if you have
+already installed `brilws` in the container. 
+
 
 If everything worked, you should be able to run `brilcalc` to check its version and 
 to get the luminosity for a sample run. 
