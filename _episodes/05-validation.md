@@ -14,7 +14,7 @@ keypoints:
 ---
 > ## Helpline
 >
-> Remember that we are always available to help.  Our [Mattermost][mattermost] channel is open.
+> Remember that we are always available to help.  Our [Mattermost](https://mattermost.web.cern.ch/cmsopendatatheo/channels/docker-pre-exercises) channel is open.
 {: .callout}
 
 ## Know your Docker image
