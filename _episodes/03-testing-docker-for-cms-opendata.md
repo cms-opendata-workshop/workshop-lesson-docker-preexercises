@@ -443,7 +443,7 @@ gmake[1]: Leaving directory `/home/cmsusr/CMSSW_5_3_32'
 ~~~
 {: .output}
 
-And now we can run it!
+And now we can run it! The following command may take anywhere from 10-20 minutes to run.
 
 > ## Docker container
 > ~~~
@@ -452,6 +452,31 @@ And now we can run it!
 > ~~~
 > {: .bash}
 {: .prereq}
+~~~
+200926 22:12:20 802 secgsi_InitProxy: cannot access private key file: /home/cmsusr/.globus/userkey.pem
+26-Sep-2020 22:46:14 CEST  Initiating request to open file root://eospublic.cern.ch//eos/opendata/cms/Run2012B/TauPlusX/AOD/22Jan2013-v1/20000/0040CF04-8E74-E211-AD0C-00266CFFA344.root
+26-Sep-2020 22:46:17 CEST  Successfully opened file root://eospublic.cern.ch//eos/opendata/cms/Run2012B/TauPlusX/AOD/22Jan2013-v1/20000/0040CF04-8E74-E211-AD0C-00266CFFA344.root
+26-Sep-2020 22:51:14 CEST  Closed file root://eospublic.cern.ch//eos/opendata/cms/Run2012B/TauPlusX/AOD/22Jan2013-v1/20000/0040CF04-8E74-E211-AD0C-00266CFFA344.root
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 fileAction           -s file_close                             1        1
+    2 fileAction           -s file_open                              2        2
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 fileAction           PostEndRun
+    2 fileAction           pre-events       pre-events
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+System                  3                   3
+~~~
+{: .output}
 
 
 
