@@ -129,7 +129,7 @@ If you want to simply build upon everything you have done already, your full Doc
 would now look like
 
 ~~~
-docker run -it --name myopendataproject --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw" -v ${HOME}/cms_open_data_work:/home/cmsusr/cms_open_data_work:shared --name mycvmfs --volume "/cvmfs:/cvmfs:shared" cmsopendata/cmssw_5_3_32 /bin/bash
+docker run -it --name myopendataproject --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/home/cmsusr/.Xauthority:rw" -v ${HOME}/cms_open_data_work:/home/cmsusr/cms_open_data_work:shared --volume "/cvmfs:/cvmfs:shared" cmsopendata/cmssw_5_3_32 /bin/bash
 ~~~
 {: .bash}
 
