@@ -336,8 +336,8 @@ CMSSW should now be available.
 {: .output}
 
 When your Docker container starts up, it puts you in `/home/cmsusr/CMSSW_5_3_32/src`, but your new mounted directory is `/home/cmsusr/cms_open_data_work`. 
-The easiest thing to do is to create a soft link to that directory from inside `/home/cmsusr/CMSSW_5_3_32/src` using `ln -s ...` and then do your work in there. 
-See exact instructions below. 
+The easiest thing to do is to create a soft link to that directory from inside `/home/cmsusr/CMSSW_5_3_32/src` using `ln -s ...` as shown below,
+and then do your work in that directory. 
 
 > ## Warning!
 > Sometimes the local volume is mounted in the Docker container as the wrong user/group. It should be
