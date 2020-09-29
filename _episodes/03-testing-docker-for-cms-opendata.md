@@ -208,12 +208,18 @@ Voila! You should be back in the same container.
 
 > ## CHALLENGE! Test X11 forwarding
 >
-> _Note that X11 forwarding does not work with Windows10 WSL2 linux so you won't have access
-> to the ROOT GUI._
+> For Windows users,
+> open a specific CMS open data container ```docker run -it -P -p 5901:5901 -p 6080:6080 cmsopendata/cmssw_5_3_32_vnc:latest /bin/bash```.
+> In the container, type ```start_vnc``` and choose a password.
+> Open a browser window with the given URL (enter the password), and start ROOT.
+> If the web browser doesn't work for you, alternative:
+>  - Go to https://bintray.com/tigervnc/stable/tigervnc/1.10.0 and download vncviewer64-1.10.0.exe
+>  - Run vncviewer64-1.10.0.exe, enter vnc server name: 127.0.0.1:5901, click connect, enter password
 >
 > For Mac and Linux users,
 > open the CMS open data container with ```docker start...``` or ```docker run...``` 
 > as instructed above and open ROOT, simply by typing ```root``` on the command line. 
+>
 > Do you see the ROOT splash screen pop up? 
 > If not, check that you followed all the instructions
 > above correctly or contact the facilitators. 
