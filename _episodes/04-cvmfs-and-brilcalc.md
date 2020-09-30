@@ -66,6 +66,11 @@ CVMFS_CLIENT_PROFILE=single
 >
 > Make sure you [verify the installation](https://cvmfs.readthedocs.io/en/stable/cpt-quickstart.html#verify-the-file-system).
 > Check that link for the latest commands, but usually this involves running
+> ~~~
+> sudo cvmfs_config setup
+> ~~~
+> {: .bash}
+> and then
 > 
 > ~~~
 > cvmfs_config probe
