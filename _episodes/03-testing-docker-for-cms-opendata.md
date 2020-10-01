@@ -364,7 +364,7 @@ you'll be working with. If you are not familiar with git/Github, check out the [
 
 > ## Local machine
 > ~~~
-> cd ~/myopendataproject
+> cd ~/cms_open_data_work
 > git clone https://github.com/katilp/AOD2NanoAODOutreachTool.git AOD2NanoAOD
 > ~~~
 > {: .language-bash}
