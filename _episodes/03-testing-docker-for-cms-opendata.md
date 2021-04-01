@@ -195,11 +195,12 @@ b3a888c059f7        cmsopendata/cmssw_5_3_32   "/opt/cms/entrypoint…"   13 day
 {: .output}
 
 You'll want to attach using the ```CONTAINER ID```. In the above example, I know that I've been using the most 
-recent container instance for cmsopendata, ```7719a7d74190```. So to reattach, I do
+recent container instance for cmsopendata, ```7719a7d74190```. So to reattach, I run the following line
+which will ```start``` and ```attach``` all in one line. Note that you 
+would want to change the ```CONTAINER ID``` for your particular case. 
 
 ~~~
-docker start 7719a7d74190
-docker attach 7719a7d74190
+docker start -a 7719a7d74190
 ~~~
 {: .language-bash}
 
